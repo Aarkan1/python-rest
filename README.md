@@ -2,10 +2,10 @@
 Flask webserver in Python, SQLite as database and Vue as frontend
 
 ## Start app
-> open terminal
-> `py main.py`
+1. open terminal
+2. `py main.py`
 
 ## Frontend
-> cd frontend
-> npm install
-> npm run dev
+1. cd frontend
+2. npm install
+3. npm run dev
