@@ -1,50 +1,34 @@
-# https://flask.palletsprojects.com/en/1.1.x/patterns/sqlite3/
-import sqlite3
-from flask import g
+# documentation:
+# https://www.encode.io/databases/
 
-# add db to the app context
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect('awesome-todos.db')
-    
-    # Easy Querying by converting rows to dictionaries
-    def make_dicts(cursor, row):
-        return dict((cursor.description[idx][0], value)
-                for idx, value in enumerate(row))
+# installation:
+# pip install databases[sqlite]
 
-    db.row_factory = make_dicts
-    return db
+from databases import Database
+db = Database('sqlite:awesome-todos.db')
 
-def query(query, args=()):
-    cur = get_db().cursor()
-    cur.execute(query, args)
-    return cur.fetchall()
+# helper functions
+async def get(query, values = {}):
+    rows = await db.fetch_all(query=query, values=values)
+    dicts = []
+    for row in rows:
+        dicts.append(dict(row))
+    return dicts
 
-def insert(query, args=()):
-    cur = get_db().cursor()
-    cur.execute(query, args)
-    get_db().commit()
-    return cur.lastrowid
+async def run(query, values = {}):
+    return await db.execute(query=query, values=values)
 
-def delete(query, args=()):
-    cur = get_db().cursor()
-    cur.execute(query, args)
-    get_db().commit()
+# CRUD functions
+async def getTodos():
+    return await get('SELECT * FROM todos')
 
-def getTodos():
-    return query('SELECT * FROM todos')
-
-def getTodoById(id):
-    todos = query('SELECT * FROM todos WHERE id = ?', (id,))
+async def getTodoById(id):
+    todos = await get('SELECT * FROM todos WHERE id = :id', { "id": id })
     return todos[0] if todos else None
 
-def deleteTodoById(id):
-    query = 'DELETE FROM todos WHERE id = ?'
-    cur = get_db().cursor()
-    cur.execute(query, (id,))
-    get_db().commit()
+async def deleteTodoById(id):
+    return await run('DELETE FROM todos WHERE id = :id', { "id": id })
 
-def createTodo(todo):
-    query = 'INSERT INTO todos(text, timestamp) VALUES(?, ?)'
-    return insert(query, [todo['text'], todo['timestamp']])
+async def createTodo(todo):
+    q = 'INSERT INTO todos(text, timestamp) VALUES(:text, :timestamp)'
+    return await run(q, { "text": todo['text'], "timestamp": todo['timestamp'] })

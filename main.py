@@ -1,110 +1,77 @@
-# https://flask.palletsprojects.com/en/1.1.x/quickstart/
-# install Flask:
-# pip install Flask
+# documentation:
+# https://sanic.readthedocs.io/en/latest/index.html
 
-# start server:
+# installation:
+# pip install sanic
+
+# start: 
 # py main.py
 
-# OR
-# export FLASK_APP=main.py
-# flask run
+from sanic import Sanic, response as res
+from sanic.exceptions import NotFound
+import time # to get unix timestamp
 
-from flask import Flask, g, jsonify, render_template, request
-from markupsafe import escape
-import time
+app = Sanic(__name__)
 
-# prevent mimetype errors
+@app.get("/hello")
+def read_root(req):
+    return res.json({"Hello": "World"})
+
+@app.get("/items/<item_id:int>")
+def read_item(req, item_id):
+    return res.json({"item_id": item_id, "q": q})
+
+# route to get all todos
+@app.get('/rest/todos')
+async def get_todos(req):
+    from database import getTodos
+
+    return res.json(await getTodos())
+
+# posting new todo
+@app.post('/rest/todos')
+async def post_todo(req):
+    from database import createTodo
+
+    # get body from req.json
+    todo = req.json
+
+    todo['timestamp'] = time.time()
+    todo['id'] = await createTodo(todo)
+
+    return res.json(todo)
+
+@app.get('/rest/todos/<todo_id:int>')
+async def get_todo_by_id(req, todo_id):
+    from database import getTodoById
+
+    return res.json(await getTodoById(todo_id))
+
+@app.put('/rest/todos/<todo_id:int>')
+async def put_todo_by_id(req, todo_id):
+      # Handle UPDATE request
+      return res.text('OK')
+
+@app.delete('/rest/todos/<todo_id:int>')
+async def delete_todo_by_id(req, todo_id):
+    from database import deleteTodoById
+
+    await deleteTodoById(todo_id)
+    return res.text('OK')
+
+# prevent mimetype errors from static files
 import mimetypes
 mimetypes.add_type('text/css', '.css')
 mimetypes.add_type('text/javascript', '.js')
 
-# serve static folder and handle SPA (Single Page Application)
-app = Flask(__name__, static_folder='www', template_folder='www', static_url_path='/')
-import database
+# serve static files
+app.static("/", "./www",)
 
-# on shutdown
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
+# use 404 fallback (index.html) to handle SPA
+@app.exception(NotFound)
+async def ignore_404s(request, exception):
+    return await res.file('./www/index.html')
 
-# dynamic route test
-@app.route('/api/<username>')
-def api_username(username):
-    return 'User %s' % escape(username)
-
-# dynamic route test
-# with autoparsing to integer
-@app.route('/post/<int:post_id>')
-def show_post(post_id):
-    return 'Post %d' % post_id
-
-# testroute for returning json
-@app.route('/heartbeat')
-def heartbeat():
-    return jsonify({ 'status': 'healthy' })
-
-# route to get all todos
-# or posting new todo
-@app.route('/rest/todos', methods=['GET', 'POST'])
-def get_todos():
-    from database import getTodos, createTodo
-
-    res = {}
-
-    if request.method == 'POST':
-        # get json data from post object
-        body = request.get_json() 
-        todo = {
-            'text': body['text'],
-            'timestamp': time.time()
-        }
-
-        id = createTodo(todo)
-        res = todo
-        res['id'] = id
-
-    else:
-        res = getTodos()
-
-    return jsonify(res)
-
-# routes to either
-# GET - get a todo by id
-# PUT - update todo by id
-# DELETE - delete todo by id
-@app.route('/rest/todos/<int:todo_id>', methods=['GET', 'PUT', 'DELETE'])
-def update_todos(todo_id):
-    from database import getTodoById, deleteTodoById
-
-    if request.method == 'GET':
-        return jsonify(getTodoById(todo_id))
-    elif request.method == 'PUT':
-        pass  # Handle UPDATE request
-    elif request.method == 'DELETE':
-        deleteTodoById(todo_id)
-        return 'OK'
-
-# Handle SPA
-@app.route('/')
-def spa():
-    return render_template("index.html")
-
-# Let frontend deal with different routes
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template("index.html")
-
-# test function to try sqlite
-def use_get_db_outside_of_context():
-    from database import get_db
-    with app.app_context():
-        cur = get_db().cursor()
-        cur.execute('SELECT * FROM todos')
-        print(cur.fetchall())
-        
 # start server
 if __name__ == "__main__":
-    # app.debug = True
-    app.run(port = 5000)
+  app.run(port=5000)

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && rm -r ../www/* && cp -r ./dist/* ../www && rm -r ./dist/*"
+    "build": "vite build && rm -r ../www/* && cp -r ./dist/index.html ./dist/404.html && cp -r ./dist/* ../www && rm -r ./dist"
   },
   "dependencies": {
     "vue": "^3.0.2",
