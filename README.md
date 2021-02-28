@@ -4,9 +4,9 @@ Sanic webserver in Python, SQLite as database and Vue as frontend
 ## Getting started
 ```
 1. open terminal
-2. create a virtual environment (see [Read more](#read-more))
+2. create a virtual environment (see Read more)
 3. py -m pip install sanic databases[sqlite]
-   if error: see [Read more](#read-more)
+   if error: see Read more
 2. py main.py
 3. go to http://127.0.0.1:5000
 ```
