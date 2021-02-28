@@ -26,8 +26,8 @@ Sanic webserver in Python, SQLite as database and Vue as frontend
 ### Create a virtual environment and manage it
 1. py -m venv sanic
 2. 
-  Windows -> sanic\Scripts\activate.bat
-  Unix or MacOS -> source sanic/bin/activate
+  - Windows -> sanic\Scripts\activate.bat
+  - Unix or MacOS -> source sanic/bin/activate
 
 [Official docs on virtual environments](https://docs.python.org/3/tutorial/venv.html)
 
@@ -35,5 +35,5 @@ Sanic webserver in Python, SQLite as database and Vue as frontend
 Install [vs_buildtools](https://aka.ms/vs/16/release/vs_buildtools.exe)
 
 Check C++ build tools and enable optional: 
-[x] "MSVC - VS 2019 C++ x64/x86..",
-[x] "C++ CMake.."
+- "MSVC - VS 2019 C++ x64/x86..",
+- "C++ CMake.."
