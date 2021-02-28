@@ -19,8 +19,8 @@ Sanic webserver in Python, SQLite as database and Vue as frontend
 ```
 
 ## Packages used
-[Sanic](https://sanic.readthedocs.io/en/latest/index.html)
-[databases](https://www.encode.io/databases/)
+- [Sanic](https://sanic.readthedocs.io/en/latest/index.html)
+- [databases](https://www.encode.io/databases/)
 
 ## Read more
 ### Create a virtual environment and manage it
