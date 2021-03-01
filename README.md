@@ -5,7 +5,7 @@ Sanic webserver in Python, SQLite as database and Vue as frontend
 ```
 1. open terminal
 2. create a virtual environment (see Read more)
-3. py -m pip install sanic databases[sqlite]
+3. py -m pip install sanic sanic-cors databases[sqlite]
    if error: see Read more
 2. py main.py
 3. go to http://127.0.0.1:5000
@@ -21,6 +21,7 @@ Sanic webserver in Python, SQLite as database and Vue as frontend
 ## Packages used
 - [Sanic](https://sanic.readthedocs.io/en/latest/index.html)
 - [databases](https://www.encode.io/databases/)
+- [sanic-cors](https://github.com/ashleysommer/sanic-cors)
 
 ## Read more
 ### Create a virtual environment and manage it

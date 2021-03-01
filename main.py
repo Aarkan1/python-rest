@@ -5,13 +5,17 @@
 # pip install sanic
 
 # start: 
+# create virtual env: 
+#   
 # py main.py
 
 from sanic import Sanic, response as res
 from sanic.exceptions import NotFound
+from sanic_cors import CORS
 import time # to get unix timestamp
 
 app = Sanic(__name__)
+CORS(app) # enable cors on all origins
 
 @app.get("/hello")
 def read_root(req):
