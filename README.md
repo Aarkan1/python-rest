@@ -37,4 +37,5 @@ Install [vs_buildtools](https://aka.ms/vs/16/release/vs_buildtools.exe)
 
 Check C++ build tools and enable optional: 
 - "MSVC - VS 2019 C++ x64/x86..",
+- "Windows 10 SDK"
 - "C++ CMake.."
